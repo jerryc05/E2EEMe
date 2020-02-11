@@ -23,3 +23,6 @@ build
 *.jks
 *.apk
 temp
+
+# shall not sync on purpose
+no_sync_*

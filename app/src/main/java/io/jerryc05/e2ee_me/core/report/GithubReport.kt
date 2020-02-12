@@ -26,8 +26,8 @@ fun report(title: String,
   return reportInternal(title, body, "[\"$label\"]")
 }
 
-const val TAG = "GithubReport"
-val issueIdRegex by lazy { "\"number\": ?(\\d+)".toRegex() }
+private const val TAG = "GithubReport"
+internal val issueIdRegex by lazy { "\"number\": ?(\\d+)".toRegex() }
 
 private fun reportInternal(title: String,
                            body: String,

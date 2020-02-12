@@ -1,4 +1,4 @@
-package io.jerryc05.e2ee_me.core
+package io.jerryc05.e2ee_me.core.crypto
 
 import kotlin.math.ceil
 import kotlin.math.floor

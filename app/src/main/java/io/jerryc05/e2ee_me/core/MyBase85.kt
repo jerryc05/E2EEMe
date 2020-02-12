@@ -17,10 +17,11 @@ fun encode(source: ByteArray): CharArray {
   var sourceIndex = 0
   var resultIndex = 0
   while (sourceIndex + 4 <= sourceSize) {
-    var temp = (source[sourceIndex++].toUInt() shl 24) or
-            (source[sourceIndex++].toUInt() shl 16) or
-            (source[sourceIndex++].toUInt() shl 8) or
-            (source[sourceIndex++].toUInt())
+    var temp = (source[sourceIndex].toUInt() shl 24) or
+            (source[sourceIndex + 1].toUInt() shl 16) or
+            (source[sourceIndex + 2].toUInt() shl 8) or
+            (source[sourceIndex + 3].toUInt())
+    sourceIndex += 4
 
     result[resultIndex + 4] = ((temp % 85u).toInt() + OFFSET).toChar()
     temp /= 85u
@@ -34,12 +35,13 @@ fun encode(source: ByteArray): CharArray {
     resultIndex += 5
   }
 
-  if (sourceIndex + 1 < sourceSize) {
+  if (sourceIndex  < sourceSize) {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
       temp = (temp shl 8) or source[sourceIndex++].toUInt()
     }
+    println("e $temp")
     temp = temp shl (when (sourceSize - sourceIndex2) {
       1 -> 5
       2 -> 3
@@ -100,7 +102,7 @@ fun decode(source: CharArray): ByteArray {
   }
 
 
-  if (sourceIndex + 1 < sourceSize) {
+  if (sourceIndex < sourceSize) {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
@@ -113,6 +115,7 @@ fun decode(source: CharArray): ByteArray {
       4 -> 2
       else -> throw Exception("sourceSie - sourceIndex2 != 2 or 3 or 4")
     })
+    println("d $temp")
     when (sourceSize - sourceIndex2) {
       2 -> {
         result[resultIndex] = (temp % 256u).toByte()

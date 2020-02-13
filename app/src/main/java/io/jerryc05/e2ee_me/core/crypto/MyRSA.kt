@@ -7,11 +7,14 @@ import io.jerryc05.e2ee_me.core.KEYSTORE_ALIAS
 import io.jerryc05.e2ee_me.core.RSA_CIPHER_ALGORITHM
 import io.jerryc05.e2ee_me.core.RSA_CIPHER_TRANSMISSION
 import io.jerryc05.e2ee_me.core.RSA_KEY_SIZE
+import io.jerryc05.e2ee_me.core.log.logA
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.PrivateKey
 import java.security.PublicKey
 import javax.crypto.Cipher
+
+private const val TAG = "RSA"
 
 private val kpg: KeyPairGenerator by lazy {
   KeyPairGenerator.getInstance(RSA_CIPHER_ALGORITHM)
@@ -47,11 +50,14 @@ internal fun generateRsaKeyPair(): KeyPair {
 
 internal fun encryptRsa(data: ByteArray, publicKey: PublicKey): ByteArray {
   cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-  return cipher.doFinal(data)
+  val result = cipher.doFinal(data)
+  logA(TAG, "encrypt-ed = ${result?.contentToString()}")
+  return result
 }
 
 
 internal fun decryptRsa(data: ByteArray, privateKey: PrivateKey): ByteArray {
+  logA(TAG, "to-decrypt = ${data.contentToString()}")
   cipher.init(Cipher.DECRYPT_MODE, privateKey)
   return cipher.doFinal(data)
 }

@@ -60,7 +60,9 @@ internal fun encryptAes(data: ByteArray,
                         iv: IvParameterSpec): ByteArray {
   logA(TAG, "encrypt iv = ${iv.iv?.contentToString()}")
   cipher.init(Cipher.ENCRYPT_MODE, key, iv)
-  return cipher.doFinal(data)
+  val result=cipher.doFinal(data)
+  logA(TAG, "encrypt-ed = ${result?.contentToString()}")
+  return result
 }
 
 
@@ -68,6 +70,7 @@ internal fun decryptAes(data: ByteArray,
                         key: SecretKey,
                         iv: IvParameterSpec): ByteArray {
   logA(TAG, "decrypt iv = ${iv.iv?.contentToString()}")
+  logA(TAG, "to-decrypt = ${data.contentToString()}")
   cipher.init(Cipher.DECRYPT_MODE, key, iv)
   return cipher.doFinal(data)
 }

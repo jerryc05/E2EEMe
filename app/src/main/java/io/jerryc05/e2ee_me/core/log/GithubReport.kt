@@ -1,4 +1,4 @@
-package io.jerryc05.e2ee_me.core.report
+package io.jerryc05.e2ee_me.core.log
 
 import android.util.Log
 import io.jerryc05.e2ee_me.BuildConfig

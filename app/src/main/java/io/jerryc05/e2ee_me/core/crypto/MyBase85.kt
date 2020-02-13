@@ -10,17 +10,17 @@ import kotlin.math.floor
 private const val OFFSET = 40 // VALID_CHARS[0].toInt()
 
 @ExperimentalUnsignedTypes
-internal fun encodeB85(source: ByteArray): CharArray {
-  val sourceSize = source.size
+internal fun encodeB85(src: ByteArray): CharArray {
+  val sourceSize = src.size
   val result = CharArray(ceil(sourceSize.toFloat() / 4 * 5).toInt())
 
   var sourceIndex = 0
   var resultIndex = 0
   while (sourceIndex + 4 <= sourceSize) {
-    var temp = (source[sourceIndex].toUInt() shl 24) or
-            (source[sourceIndex + 1].toUInt() shl 16) or
-            (source[sourceIndex + 2].toUInt() shl 8) or
-            (source[sourceIndex + 3].toUInt())
+    var temp = (src[sourceIndex].toUInt() shl 24) or
+            (src[sourceIndex + 1].toUInt() shl 16) or
+            (src[sourceIndex + 2].toUInt() shl 8) or
+            (src[sourceIndex + 3].toUInt())
     sourceIndex += 4
 
     result[resultIndex + 4] = ((temp % 85u).toInt() + OFFSET).toChar()
@@ -35,11 +35,11 @@ internal fun encodeB85(source: ByteArray): CharArray {
     resultIndex += 5
   }
 
-  if (sourceIndex  < sourceSize) {
+  if (sourceIndex < sourceSize) {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
-      temp = (temp shl 8) or source[sourceIndex++].toUInt()
+      temp = (temp shl 8) or src[sourceIndex++].toUInt()
     }
     println("e $temp")
     temp = temp shl (when (sourceSize - sourceIndex2) {
@@ -78,18 +78,18 @@ internal fun encodeB85(source: ByteArray): CharArray {
 }
 
 @ExperimentalUnsignedTypes
-internal fun decodeB85(source: CharArray): ByteArray {
-  val sourceSize = source.size
+internal fun decodeB85(src: CharArray): ByteArray {
+  val sourceSize = src.size
   val result = ByteArray(floor(sourceSize.toFloat() / 5 * 4).toInt())
 
   var sourceIndex = 0
   var resultIndex = 0
   while (sourceIndex + 5 <= sourceSize) {
-    var temp = (source[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u * 85u
-    temp += (source[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u
-    temp += (source[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u
-    temp += (source[sourceIndex++].toInt() - OFFSET).toUInt() * 85u
-    temp += (source[sourceIndex++].toInt() - OFFSET).toUInt()
+    var temp = (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u * 85u
+    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u
+    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u
+    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u
+    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt()
 
     result[resultIndex + 3] = (temp % 256u).toByte()
     temp /= 256u
@@ -107,7 +107,7 @@ internal fun decodeB85(source: CharArray): ByteArray {
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
       temp *= 85u
-      temp += (source[sourceIndex++].toInt() - OFFSET).toUInt()
+      temp += (src[sourceIndex++].toInt() - OFFSET).toUInt()
     }
     temp = temp shr (when (sourceSize - sourceIndex2) {
       2 -> 5
@@ -137,4 +137,29 @@ internal fun decodeB85(source: CharArray): ByteArray {
   }
 
   return result
+}
+
+private const val startMark1 = '#'.toByte()
+private const val startMark2 = '$'.toByte()
+private const val endMark = startMark1
+
+internal fun wrapB85Bytes(bytes: ByteArray): ByteArray {
+  val result = ByteArray(bytes.size + 3)
+  result[0] = startMark1
+  result[1] = startMark2
+  result[result.size - 1] = endMark
+  bytes.copyInto(result, 1)
+  return result
+}
+
+internal fun unwrapB85Bytes(bytes: ByteArray): ByteArray {
+  val start = bytes.indexOf(startMark1) + 2
+  if (bytes[start - 2] != startMark1 || bytes[start - 1] != startMark2)
+    throw Exception("Invalid start mark!")
+
+  val end = bytes.sliceArray(start until bytes.size)
+          .indexOf(endMark) - 1
+  if (bytes[end + 1] != endMark)
+    throw Exception("Invalid end mark!")
+  return bytes.sliceArray(start..end)
 }

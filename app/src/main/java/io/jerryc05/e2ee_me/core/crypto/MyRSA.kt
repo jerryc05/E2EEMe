@@ -27,7 +27,7 @@ private val cipher by lazy {
   Cipher.getInstance(RSA_CIPHER_TRANSMISSION)
 }
 
-internal fun generateRSAKeyPair(): KeyPair {
+internal fun generateRsaKeyPair(): KeyPair {
   kgParamSpec.setKeySize(RSA_KEY_SIZE)
 
   return try {
@@ -45,13 +45,13 @@ internal fun generateRSAKeyPair(): KeyPair {
   }
 }
 
-internal fun encryptRSA(data: ByteArray, publicKey: PublicKey): ByteArray {
+internal fun encryptRsa(data: ByteArray, publicKey: PublicKey): ByteArray {
   cipher.init(Cipher.ENCRYPT_MODE, publicKey)
   return cipher.doFinal(data)
 }
 
 
-internal fun decryptRSA(data: ByteArray, privateKey: PrivateKey): ByteArray {
+internal fun decryptRsa(data: ByteArray, privateKey: PrivateKey): ByteArray {
   cipher.init(Cipher.DECRYPT_MODE, privateKey)
   return cipher.doFinal(data)
 }

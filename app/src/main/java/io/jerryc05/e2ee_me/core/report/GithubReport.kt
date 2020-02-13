@@ -2,7 +2,7 @@ package io.jerryc05.e2ee_me.core.report
 
 import android.util.Log
 import io.jerryc05.e2ee_me.BuildConfig
-import io.jerryc05.e2ee_me.core.githubBotToken
+import io.jerryc05.e2ee_me.core.authToken
 import io.jerryc05.e2ee_me.core.okHttpClient
 import io.jerryc05.e2ee_me.core.repoName
 import okhttp3.Call
@@ -13,16 +13,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 
-fun report(title: String,
-           body: String,
-           labels: Array<String>) {
+internal fun report(title: String,
+                    body: String,
+                    labels: Array<String>) {
   return reportInternal(title, body, labels.joinToString(
           prefix = "[", postfix = "]", separator = ","))
 }
 
-fun report(title: String,
-           body: String,
-           label: String) {
+internal fun report(title: String,
+                    body: String,
+                    label: String) {
   return reportInternal(title, body, "[\"$label\"]")
 }
 
@@ -36,7 +36,7 @@ private fun reportInternal(title: String,
 
   val request = Request.Builder()
           .url("https://api.github.com/repos/$repoName/issues")
-          .header("Authorization", "token $githubBotToken")
+          .header("Authorization", "token ${String(authToken)}")
           .post(postBody.toRequestBody(
                   "application/json;charset=utf-8".toMediaTypeOrNull()))
           .build()

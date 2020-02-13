@@ -4,14 +4,30 @@ import android.security.keystore.KeyProperties
 import io.jerryc05.e2ee_me.BuildConfig
 import okhttp3.OkHttpClient
 
-const val CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_RSA
-const val CIPHER_TRANSMISSION = CIPHER_ALGORITHM + '/' +
+internal const val RSA_CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_RSA
+internal const val AES_CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
+internal const val ECDH_KEY_EXCHANGE = "ECDH"
+internal const val EC_KEYPAIR_ALGORITHM = KeyProperties.KEY_ALGORITHM_EC
+
+internal const val RSA_CIPHER_TRANSMISSION = "" +
+        RSA_CIPHER_ALGORITHM + '/' +
         "NONE" + '/' +
-        KeyProperties.ENCRYPTION_PADDING_RSA_OAEP
-const val RSA_KEY_SIZE = 2048
-const val KEYSTORE_ALIAS = BuildConfig.APPLICATION_ID
+        KeyProperties.ENCRYPTION_PADDING_NONE
+internal const val AES_CIPHER_TRANSMISSION = "" +
+        AES_CIPHER_ALGORITHM + '/' +
+        KeyProperties.BLOCK_MODE_CTR + '/' +
+        KeyProperties.ENCRYPTION_PADDING_NONE
 
-val okHttpClient by lazy { OkHttpClient() }
+internal const val RSA_KEY_SIZE = 2048
+internal const val EC_KEY_SIZE = 256
+internal const val AES_KEY_SIZE = 128
+internal const val KEYSTORE_ALIAS = BuildConfig.APPLICATION_ID
 
-const val repoName = "jerryc05/E2EEMe"
-const val githubBotToken = "c78822bd80a7a3a2ee55559b968c55a7f95c714e"
+internal val okHttpClient by lazy { OkHttpClient() }
+
+internal const val repoName = "jerryc05/E2EEMe"
+internal val authToken by lazy {
+  byteArrayOf(48, 50, 55, 98, 99, 49, 57, 53, 57, 98, 49, 99, 98,
+          50, 100, 51, 48, 52, 101, 100, 49, 48, 51, 48, 102, 53,
+          98, 52, 56, 50, 101, 49, 52, 49, 51, 97, 102, 55, 57, 53)
+}

@@ -10,7 +10,7 @@ import kotlin.math.floor
 private const val OFFSET = 40 // VALID_CHARS[0].toInt()
 
 @ExperimentalUnsignedTypes
-fun encode(source: ByteArray): CharArray {
+internal fun encodeB85(source: ByteArray): CharArray {
   val sourceSize = source.size
   val result = CharArray(ceil(sourceSize.toFloat() / 4 * 5).toInt())
 
@@ -78,7 +78,7 @@ fun encode(source: ByteArray): CharArray {
 }
 
 @ExperimentalUnsignedTypes
-fun decode(source: CharArray): ByteArray {
+internal fun decodeB85(source: CharArray): ByteArray {
   val sourceSize = source.size
   val result = ByteArray(floor(sourceSize.toFloat() / 5 * 4).toInt())
 

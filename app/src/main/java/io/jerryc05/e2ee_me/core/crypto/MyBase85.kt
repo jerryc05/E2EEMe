@@ -154,12 +154,12 @@ internal fun wrapB85Bytes(bytes: ByteArray): ByteArray {
 
 internal fun unwrapB85Bytes(bytes: ByteArray): ByteArray {
   val start = bytes.indexOf(startMark1) + 2
-  if (bytes[start - 2] != startMark1 || bytes[start - 1] != startMark2)
+  if (start < 0 || bytes[start - 2] != startMark1 || bytes[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
 
   val end = bytes.sliceArray(start until bytes.size)
           .indexOf(endMark) - 1
-  if (bytes[end + 1] != endMark)
+  if (end < 0)
     throw Exception("Invalid end mark!")
   return bytes.sliceArray(start..end)
 }

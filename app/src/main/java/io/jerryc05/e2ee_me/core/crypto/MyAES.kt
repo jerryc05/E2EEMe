@@ -17,8 +17,8 @@ import kotlin.random.Random
 
 private const val TAG = "AES"
 
-private val kpg by lazy {
-  KeyPairGenerator.getInstance(AES_CIPHER_ALGORITHM)
+private val kg by lazy {
+  KeyGenerator.getInstance(AES_CIPHER_ALGORITHM)
 }
 
 private val kgParamSpec by lazy {
@@ -38,14 +38,14 @@ internal fun generateAesKey(): SecretKey {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(true)
 
-    kpg.initialize(kgParamSpec.build())
-    kpg.generateKey()
+    kg.initialize(kgParamSpec.build())
+    kg.generateKey()
   } catch (e: Exception) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(false)
 
-    kpg.initialize(kgParamSpec.build())
-    kpg.generateKey()
+    kg.initialize(kgParamSpec.build())
+    kg.generateKey()
   }
 }
 

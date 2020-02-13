@@ -8,9 +8,8 @@ import io.jerryc05.e2ee_me.core.AES_CIPHER_TRANSMISSION
 import io.jerryc05.e2ee_me.core.AES_KEY_SIZE
 import io.jerryc05.e2ee_me.core.KEYSTORE_ALIAS
 import io.jerryc05.e2ee_me.core.log.logA
-import java.security.KeyPair
-import java.security.KeyPairGenerator
 import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import kotlin.random.Random
@@ -38,13 +37,13 @@ internal fun generateAesKey(): SecretKey {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(true)
 
-    kg.initialize(kgParamSpec.build())
+    kg.init(kgParamSpec.build())
     kg.generateKey()
   } catch (e: Exception) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(false)
 
-    kg.initialize(kgParamSpec.build())
+    kg.init(kgParamSpec.build())
     kg.generateKey()
   }
 }
@@ -60,7 +59,7 @@ internal fun encryptAes(data: ByteArray,
                         iv: IvParameterSpec): ByteArray {
   logA(TAG, "encrypt iv = ${iv.iv?.contentToString()}")
   cipher.init(Cipher.ENCRYPT_MODE, key, iv)
-  val result=cipher.doFinal(data)
+  val result = cipher.doFinal(data)
   logA(TAG, "encrypt-ed = ${result?.contentToString()}")
   return result
 }

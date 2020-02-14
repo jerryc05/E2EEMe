@@ -3,10 +3,7 @@ package io.jerryc05.e2ee_me.core.crypto
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import io.jerryc05.e2ee_me.core.AES_CIPHER_ALGORITHM
-import io.jerryc05.e2ee_me.core.AES_CIPHER_TRANSMISSION
-import io.jerryc05.e2ee_me.core.AES_KEY_SIZE
-import io.jerryc05.e2ee_me.core.KEYSTORE_ALIAS
+import io.jerryc05.e2ee_me.core.*
 import io.jerryc05.e2ee_me.core.log.logA
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -17,7 +14,7 @@ import kotlin.random.Random
 private const val TAG = "AES"
 
 private val kg by lazy {
-  KeyGenerator.getInstance(AES_CIPHER_ALGORITHM)
+  KeyGenerator.getInstance(AES_CIPHER_ALGORITHM, ANDROID_KEYSTORE_PROVIDER)
 }
 
 private val kgParamSpec by lazy {
@@ -27,7 +24,7 @@ private val kgParamSpec by lazy {
 }
 
 private val cipher by lazy {
-  Cipher.getInstance(AES_CIPHER_TRANSMISSION)
+  Cipher.getInstance(AES_CIPHER_TRANSMISSION, ANDROID_KEYSTORE_PROVIDER)
 }
 
 internal fun generateAesKey(): SecretKey {

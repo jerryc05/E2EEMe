@@ -131,29 +131,29 @@ internal fun decodeB85(src: CharArray): ByteArray {
   return result
 }
 
-private const val startMark1 = '#'.toByte()
-private const val startMark2 = '$'.toByte()
+private const val startMark1 = '#'
+private const val startMark2 = '$'
 private const val endMark = startMark1
 
-internal fun wrapB85Bytes(bytes: ByteArray): ByteArray {
-  val result = ByteArray(bytes.size + 3)
+internal fun wrapB85Array(chars: CharArray): CharArray {
+  val result = CharArray(chars.size + 3)
   result[0] = startMark1
   result[1] = startMark2
   result[result.size - 1] = endMark
-  bytes.copyInto(result, 1)
+  chars.copyInto(result, 2)
   return result
 }
 
-internal fun unwrapB85Bytes(bytes: ByteArray): ByteArray {
-  val start = bytes.indexOf(startMark1) + 2
-  if (start < 0 || bytes[start - 2] != startMark1 || bytes[start - 1] != startMark2)
+internal fun unwrapB85Array(chars: CharArray): CharArray {
+  val start = chars.indexOf(startMark1) + 2
+  if (start < 0 || chars[start - 2] != startMark1 || chars[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
 
-  val end = bytes.sliceArray(start until bytes.size)
+  val end = chars.sliceArray(start until chars.size)
           .indexOf(endMark) - 1
   if (end < 0)
     throw Exception("Invalid end mark!")
-  return bytes.sliceArray(start..end)
+  return chars.sliceArray(start..end)
 }
 
 private fun Byte.mapToUByte(): UByte {

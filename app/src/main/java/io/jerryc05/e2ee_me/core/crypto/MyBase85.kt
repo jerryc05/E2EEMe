@@ -40,14 +40,12 @@ internal fun encodeB85(src: ByteArray): CharArray {
     while (sourceIndex < sourceSize) {
       temp = (temp shl 8) or src[sourceIndex++].mapToUByte().toUInt()
     }
-    println("e temp = $temp")
     temp = temp shl (when (sourceSize - sourceIndex2) {
       1 -> 4
       2 -> 2
       3 -> 1
       else -> throw Exception("sourceSie - sourceIndex2 != 1 or 2 or 3")
     })
-    println("e temp2 = $temp")
     when (sourceSize - sourceIndex2) {
       1 -> {
         result[resultIndex + 1] = ((temp % 85u) + OFFSET).toByte().toChar()
@@ -104,14 +102,12 @@ internal fun decodeB85(src: CharArray): ByteArray {
     while (sourceIndex < sourceSize) {
       temp = temp * 85u + (src[sourceIndex++].toInt().toUByte() - OFFSET)
     }
-    println("d temp2 = $temp")
     temp = temp shr (when (sourceSize - sourceIndex2) {
       2 -> 4
       3 -> 2
       4 -> 1
       else -> throw Exception("sourceSie - sourceIndex2 != 2 or 3 or 4")
     })
-    println("d temp = $temp")
     when (sourceSize - sourceIndex2) {
       2 -> {
         result[resultIndex + 0] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()

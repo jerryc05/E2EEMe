@@ -149,7 +149,7 @@ internal fun unwrapB85Array(chars: CharArray): CharArray {
   if (start < 0 || chars[start - 2] != startMark1 || chars[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
 
-  val end = chars.sliceArray(start until chars.size)
+  val end = start + chars.sliceArray(start until chars.size)
           .indexOf(endMark) - 1
   if (end < 0)
     throw Exception("Invalid end mark!")

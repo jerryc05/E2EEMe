@@ -26,8 +26,4 @@ internal const val KEYSTORE_ALIAS = BuildConfig.APPLICATION_ID
 internal val okHttpClient by lazy { OkHttpClient() }
 
 internal const val repoName = "jerryc05/E2EEMe"
-internal val authToken by lazy {
-  byteArrayOf(48, 50, 55, 98, 99, 49, 57, 53, 57, 98, 49, 99, 98,
-          50, 100, 51, 48, 52, 101, 100, 49, 48, 51, 48, 102, 53,
-          98, 52, 56, 50, 101, 49, 52, 49, 51, 97, 102, 55, 57, 53)
-}
+internal const val authToken = "#\$`k8h{q7F6-cg7tZpq5_V`kLUXa1AYDr4h:\\cFi<+b.Fzyr4xu6#"

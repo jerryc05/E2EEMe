@@ -4,9 +4,10 @@ import android.security.keystore.KeyProperties
 import io.jerryc05.e2ee_me.BuildConfig
 import okhttp3.OkHttpClient
 
+internal const val ANDROID_KEYSTORE_PROVIDER = "AndroidKeyStore"
 internal const val RSA_CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_RSA
 internal const val AES_CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
-internal const val ECDH_KEY_EXCHANGE = "ECDH"
+internal const val ECDH_KEY_EXCHANGE_ALGORITHM = "ECDH"
 internal const val EC_KEYPAIR_ALGORITHM = KeyProperties.KEY_ALGORITHM_EC
 
 internal const val RSA_CIPHER_TRANSMISSION = "" +

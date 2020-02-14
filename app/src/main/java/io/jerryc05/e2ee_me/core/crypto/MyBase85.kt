@@ -1,37 +1,36 @@
+@file:Suppress("unused", "SpellCheckingInspection",
+        "EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+
 package io.jerryc05.e2ee_me.core.crypto
 
 import kotlin.math.ceil
 import kotlin.math.floor
 
-//private const val VALID_CHARS =
-//        "()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-//        "[\\]^_`abcdefghijklmnopqrstuvwxyz{|"
+/*private const val VALID_CHARS =
+ *        "()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+ *        "[\\]^_`abcdefghijklmnopqrstuvwxyz{|"
+ */
 
-private const val OFFSET = 40 // VALID_CHARS[0].toInt()
+private const val OFFSET: UByte = 40u // VALID_CHARS[0].toInt()
 
-@ExperimentalUnsignedTypes
 internal fun encodeB85(src: ByteArray): CharArray {
   val sourceSize = src.size
-  val result = CharArray(ceil(sourceSize.toFloat() / 4 * 5).toInt())
+  val result = CharArray(ceil(sourceSize / 4F * 5).toInt())
 
   var sourceIndex = 0
   var resultIndex = 0
   while (sourceIndex + 4 <= sourceSize) {
-    var temp = (src[sourceIndex].toUInt() shl 24) or
-            (src[sourceIndex + 1].toUInt() shl 16) or
-            (src[sourceIndex + 2].toUInt() shl 8) or
-            (src[sourceIndex + 3].toUInt())
-    sourceIndex += 4
+    var temp = 0u
+    repeat(4) {
+      temp = (temp * (UByte.MAX_VALUE + 1u)) or
+              src[sourceIndex++].mapToUByte().toUInt()
+    }
 
-    result[resultIndex + 4] = ((temp % 85u).toInt() + OFFSET).toChar()
-    temp /= 85u
-    result[resultIndex + 3] = ((temp % 85u).toInt() + OFFSET).toChar()
-    temp /= 85u
-    result[resultIndex + 2] = ((temp % 85u).toInt() + OFFSET).toChar()
-    temp /= 85u
-    result[resultIndex + 1] = ((temp % 85u).toInt() + OFFSET).toChar()
-    temp /= 85u
-    result[resultIndex] = ((temp % 85u).toInt() + OFFSET).toChar()
+    var tempIndex = resultIndex + 4
+    repeat(5) {
+      result[tempIndex--] = ((temp % 85u) + OFFSET).toByte().toChar()
+      temp /= 85u
+    }
     resultIndex += 5
   }
 
@@ -39,36 +38,37 @@ internal fun encodeB85(src: ByteArray): CharArray {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
-      temp = (temp shl 8) or src[sourceIndex++].toUInt()
+      temp = (temp shl 8) or src[sourceIndex++].mapToUByte().toUInt()
     }
-    println("e $temp")
+    println("e temp = $temp")
     temp = temp shl (when (sourceSize - sourceIndex2) {
-      1 -> 5
-      2 -> 3
-      3 -> 2
+      1 -> 4
+      2 -> 2
+      3 -> 1
       else -> throw Exception("sourceSie - sourceIndex2 != 1 or 2 or 3")
     })
+    println("e temp2 = $temp")
     when (sourceSize - sourceIndex2) {
       1 -> {
-        result[resultIndex + 1] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 1] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 0] = ((temp % 85u) + OFFSET).toByte().toChar()
       }
       2 -> {
-        result[resultIndex + 2] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 2] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex + 1] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 1] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 0] = ((temp % 85u) + OFFSET).toByte().toChar()
       }
       3 -> {
-        result[resultIndex + 3] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 3] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex + 2] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 2] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex + 1] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 1] = ((temp % 85u) + OFFSET).toByte().toChar()
         temp /= 85u
-        result[resultIndex] = ((temp % 85u).toInt() + OFFSET).toChar()
+        result[resultIndex + 0] = ((temp % 85u) + OFFSET).toByte().toChar()
       }
       else -> throw Exception("sourceSie - sourceIndex2 != 1 or 2 or 3")
     }
@@ -77,60 +77,56 @@ internal fun encodeB85(src: ByteArray): CharArray {
   return result
 }
 
-@ExperimentalUnsignedTypes
 internal fun decodeB85(src: CharArray): ByteArray {
   val sourceSize = src.size
-  val result = ByteArray(floor(sourceSize.toFloat() / 5 * 4).toInt())
+  val result = ByteArray(floor(sourceSize / 5F * 4).toInt())
 
   var sourceIndex = 0
   var resultIndex = 0
   while (sourceIndex + 5 <= sourceSize) {
-    var temp = (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u * 85u
-    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u * 85u
-    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u * 85u
-    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt() * 85u
-    temp += (src[sourceIndex++].toInt() - OFFSET).toUInt()
+    var temp = 0u
+    repeat(5) {
+      temp = temp * 85u + (src[sourceIndex++].toInt().toUInt() - OFFSET)
+    }
 
-    result[resultIndex + 3] = (temp % 256u).toByte()
-    temp /= 256u
-    result[resultIndex + 2] = (temp % 256u).toByte()
-    temp /= 256u
-    result[resultIndex + 1] = (temp % 256u).toByte()
-    temp /= 256u
-    result[resultIndex] = (temp % 256u).toByte()
+    var tempIndex = resultIndex + 3
+    repeat(4) {
+      result[tempIndex--] = (temp % (UByte.MAX_VALUE + 1u))
+              .toUByte().mapToByte()
+      temp /= (UByte.MAX_VALUE + 1u)
+    }
     resultIndex += 4
   }
-
 
   if (sourceIndex < sourceSize) {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
-      temp *= 85u
-      temp += (src[sourceIndex++].toInt() - OFFSET).toUInt()
+      temp = temp * 85u + (src[sourceIndex++].toInt().toUByte() - OFFSET)
     }
+    println("d temp2 = $temp")
     temp = temp shr (when (sourceSize - sourceIndex2) {
-      2 -> 5
-      3 -> 3
-      4 -> 2
+      2 -> 4
+      3 -> 2
+      4 -> 1
       else -> throw Exception("sourceSie - sourceIndex2 != 2 or 3 or 4")
     })
-    println("d $temp")
+    println("d temp = $temp")
     when (sourceSize - sourceIndex2) {
       2 -> {
-        result[resultIndex] = (temp % 256u).toByte()
+        result[resultIndex + 0] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
       }
       3 -> {
-        result[resultIndex + 1] = (temp % 256u).toByte()
-        temp /= 256u
-        result[resultIndex] = (temp % 256u).toByte()
+        result[resultIndex + 1] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
+        temp /= (UByte.MAX_VALUE + 1u)
+        result[resultIndex + 0] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
       }
       4 -> {
-        result[resultIndex + 2] = (temp % 256u).toByte()
-        temp /= 256u
-        result[resultIndex + 1] = (temp % 256u).toByte()
-        temp /= 256u
-        result[resultIndex] = (temp % 256u).toByte()
+        result[resultIndex + 2] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
+        temp /= (UByte.MAX_VALUE + 1u)
+        result[resultIndex + 1] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
+        temp /= (UByte.MAX_VALUE + 1u)
+        result[resultIndex + 0] = (temp % (UByte.MAX_VALUE + 1u)).toUByte().mapToByte()
       }
       else -> throw Exception("sourceSie - sourceIndex2 != 2 or 3 or 4")
     }
@@ -162,4 +158,12 @@ internal fun unwrapB85Bytes(bytes: ByteArray): ByteArray {
   if (end < 0)
     throw Exception("Invalid end mark!")
   return bytes.sliceArray(start..end)
+}
+
+private fun Byte.mapToUByte(): UByte {
+  return (this - Byte.MIN_VALUE).toUByte()
+}
+
+private fun UByte.mapToByte(): Byte {
+  return (this.toInt() + Byte.MIN_VALUE).toByte()
 }

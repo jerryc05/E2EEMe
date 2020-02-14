@@ -6,7 +6,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import io.jerryc05.e2ee_me.core.crypto.*
-import io.jerryc05.e2ee_me.core.log.logA
 import javax.crypto.spec.IvParameterSpec
 
 
@@ -36,17 +35,14 @@ class MainActivity : AppCompatActivity() {
               k1,
               IvParameterSpec(ivByte)
       )
-      val b1 = ivByte + encryptText
-      encryptedText.text = String(encodeB85(b1))
+      encryptedText.text = String(encodeB85(ivByte + encryptText))
 
-      val b2 = decodeB85(encodeB85(b1))
-      logA("?", "b1 = ${b1.contentToString()}")
-      logA("?", "b2 = ${b2.contentToString()}")
+      val d = decodeB85((encryptedText.text as String).toCharArray())
 
       decryptedText.text = String(decryptAes(
-              encryptText,
+              d.sliceArray(16 until d.size),
               k2,
-              IvParameterSpec(ivByte)
+              IvParameterSpec(d.sliceArray(0 until 16))
       ))
     }
   }

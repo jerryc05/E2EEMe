@@ -15,9 +15,12 @@ fun printProviders() {
               " ${service.type}  \t| ${service.algorithm}")
     }
   }
+
   /*
 A/Provider: === AndroidNSSP | Android Network Security Policy Provider ===
 A/Provider:  └ TrustManagerFactory  	| PKIX
+   */
+  /*
 A/Provider: === AndroidOpenSSL | Android's OpenSSL-backed security provider ===
 A/Provider:  ├ SSLContext  	| SSL
 A/Provider:  ├ SSLContext  	| TLS
@@ -110,9 +113,13 @@ A/Provider:  ├ Mac  	| HmacSHA256
 A/Provider:  ├ Mac  	| HmacSHA384
 A/Provider:  ├ Mac  	| HmacSHA512
 A/Provider:  └ CertificateFactory  	| X509
+   */
+  /*
 A/Provider: === CertPathProvider | Provider of CertPathBuilder and CertPathVerifier ===
 A/Provider:  ├ CertPathBuilder  	| PKIX
 A/Provider:  └ CertPathValidator  	| PKIX
+   */
+  /*
 A/Provider: === AndroidKeyStoreBCWorkaround | Android KeyStore security provider to work around Bouncy Castle ===
 A/Provider:  ├ Mac  	| HmacSHA1
 A/Provider:  ├ Mac  	| HmacSHA224
@@ -151,6 +158,8 @@ A/Provider:  ├ Signature  	| SHA224withECDSA
 A/Provider:  ├ Signature  	| SHA256withECDSA
 A/Provider:  ├ Signature  	| SHA384withECDSA
 A/Provider:  └ Signature  	| SHA512withECDSA
+   */
+  /*
 A/Provider: === BC | BouncyCastle Security Provider v1.61 ===
 A/Provider:  ├ MessageDigest  	| MD5
 A/Provider:  ├ Mac  	| HMACMD5
@@ -305,10 +314,14 @@ A/Provider:  ├ KeyStore  	| PKCS12
 A/Provider:  ├ CertPathValidator  	| PKIX
 A/Provider:  ├ CertPathBuilder  	| PKIX
 A/Provider:  └ CertStore  	| Collection
+   */
+  /*
 A/Provider: === HarmonyJSSE | Harmony JSSE Provider ===
 A/Provider:  ├ KeyManagerFactory  	| PKIX
 A/Provider:  ├ TrustManagerFactory  	| PKIX
 A/Provider:  └ KeyStore  	| AndroidCAStore
+   */
+  /*
 A/Provider: === AndroidKeyStore | Android KeyStore security provider ===
 A/Provider:  ├ KeyStore  	| AndroidKeyStore
 A/Provider:  ├ KeyPairGenerator  	| EC

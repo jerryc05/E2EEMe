@@ -15,7 +15,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import io.jerryc05.e2ee_me.R
-import io.jerryc05.e2ee_me.core.AES_KEY_SIZE
+import io.jerryc05.e2ee_me.core.AES_VI_SIZE
 import io.jerryc05.e2ee_me.core.EC_KEYPAIR_ALGORITHM
 import io.jerryc05.e2ee_me.core.crypto.*
 import io.jerryc05.e2ee_me.core.log.logE
@@ -104,21 +104,22 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
           val str =
                   if (v.id == R.id.btn_encrypt) {
                     val ivByte = generateIv()
-                    String(encryptAes(
-                            editTextText.text.toString().toByteArray(),
-                            exchangedKey!!,
-                            IvParameterSpec(ivByte)
-                    ).encodeB85().wrapB85Array())
+                    String((ivByte +
+                            encryptAes(
+                                    editTextText.text.toString().toByteArray(),
+                                    exchangedKey!!,
+                                    IvParameterSpec(ivByte)
+                            )).encodeB85().wrapB85Array())
                   } else {
                     val temp = editTextText.text.toString()
                             .toCharArray().tryUnwrapB85Array()
                     val data = temp.decodeB85()
                     String(decryptAes(
-                            data.sliceArray(
-                                    AES_KEY_SIZE / Byte.SIZE_BITS until data.size),
+                            data.sliceArray(AES_VI_SIZE until data.size),
                             exchangedKey!!,
-                            IvParameterSpec(data.sliceArray(
-                                    0 until AES_KEY_SIZE / Byte.SIZE_BITS))))
+                            IvParameterSpec(
+                                    data.sliceArray(0 until AES_VI_SIZE)
+                            )))
                   }
           textContent.text = str
         } else {

@@ -24,7 +24,8 @@ private val kgParamSpec by lazy {
 }
 
 private val cipher by lazy {
-  Cipher.getInstance(AES_CIPHER_TRANSMISSION, ANDROID_KEYSTORE_PROVIDER)
+  // WARNING! Cannot use Android KeyStore!
+  Cipher.getInstance(AES_CIPHER_TRANSMISSION)
 }
 
 internal fun generateAesKey(): SecretKey {
@@ -47,7 +48,7 @@ internal fun generateAesKey(): SecretKey {
 }
 
 internal fun generateIv(): ByteArray {
-  val ivByte = ByteArray(AES_KEY_SIZE / Byte.SIZE_BITS)
+  val ivByte = ByteArray(AES_VI_SIZE)
   Random.nextBytes(ivByte)
   return ivByte
 }

@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package io.jerryc05.e2ee_me.core
 
 import android.app.Activity
@@ -25,8 +27,8 @@ internal const val AES_CIPHER_TRANSMISSION = "" +
 internal const val EC_CURVE_STD = "secp256r1"
 
 internal const val RSA_KEY_SIZE = 2048
-internal const val EC_KEY_SIZE = 256
 internal const val AES_KEY_SIZE = 128
+internal const val AES_VI_SIZE = 8
 internal const val KEYSTORE_ALIAS = BuildConfig.APPLICATION_ID
 
 internal val okHttpClient by lazy { OkHttpClient() }

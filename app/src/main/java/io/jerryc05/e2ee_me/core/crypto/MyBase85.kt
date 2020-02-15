@@ -3,6 +3,7 @@
 
 package io.jerryc05.e2ee_me.core.crypto
 
+import android.util.Log
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -10,6 +11,8 @@ import kotlin.math.floor
  *        "()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
  *        "[\\]^_`abcdefghijklmnopqrstuvwxyz{|"
  */
+
+private const val TAG = "MyBase85"
 
 private const val OFFSET: UByte = 40u // VALID_CHARS[0].toInt()
 
@@ -135,25 +138,41 @@ private const val startMark1 = '#'
 private const val startMark2 = '$'
 private const val endMark = startMark1
 
-internal fun wrapB85Array(chars: CharArray): CharArray {
-  val result = CharArray(chars.size + 3)
+internal fun CharArray.wrapB85Array(): CharArray {
+  val charsSize = this.size
+
+  if (charsSize >= 3 && this[0] == startMark1 &&
+          this[1] == startMark2 && this[charsSize - 1] == endMark)
+    return this
+
+  val resultSize = charsSize + 3
+  val result = CharArray(resultSize)
   result[0] = startMark1
   result[1] = startMark2
-  result[result.size - 1] = endMark
-  chars.copyInto(result, 2)
+  result[resultSize - 1] = endMark
+  this.copyInto(result, 2)
   return result
 }
 
-internal fun unwrapB85Array(chars: CharArray): CharArray {
-  val start = chars.indexOf(startMark1) + 2
-  if (start < 0 || chars[start - 2] != startMark1 || chars[start - 1] != startMark2)
+internal fun CharArray.unwrapB85Array(): CharArray {
+  val start = this.lastIndexOf(startMark1) + 2
+  if (start < 0 || this[start - 2] != startMark1 || this[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
 
-  val end = start + chars.sliceArray(start until chars.size)
+  val end = start + this.sliceArray(start until this.size)
           .indexOf(endMark) - 1
   if (end < 0)
     throw Exception("Invalid end mark!")
-  return chars.sliceArray(start..end)
+  return this.sliceArray(start..end)
+}
+
+internal fun CharArray.tryUnwrapB85Array(): CharArray {
+  return try {
+    this.unwrapB85Array()
+  } catch (e: Exception) {
+    Log.e(TAG, "tryUnwrapB85Array: ", e)
+    this
+  }
 }
 
 private fun Byte.mapToUByte(): UByte {

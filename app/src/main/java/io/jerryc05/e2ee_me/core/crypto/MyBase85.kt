@@ -4,6 +4,7 @@
 package io.jerryc05.e2ee_me.core.crypto
 
 import android.util.Log
+import io.jerryc05.e2ee_me.core.log.logA
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -155,7 +156,8 @@ internal fun CharArray.wrapB85Array(): CharArray {
 }
 
 internal fun CharArray.unwrapB85Array(): CharArray {
-  val start = this.lastIndexOf(startMark1) + 2
+  logA(TAG, "unwrapB85Array: ${String(this)}")
+  val start = this.lastIndexOf(startMark2) + 1
   if (start < 0 || this[start - 2] != startMark1 || this[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
 

@@ -4,51 +4,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
-    <EditText
-        android:id="@+id/editTextTextMultiLine"
+    <TextView
+        android:id="@+id/textView_pubKey"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        android:ems="9"
+        android:text="No Public Key!"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/editText_pubKey"
+        app:layout_constraintEnd_toStartOf="@+id/btn_genKey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_genKey"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTextMultiLine"
+        android:text="GENERATE"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_pubKey"
+        app:layout_constraintEnd_toStartOf="@+id/btn_copyKey"
+        app:layout_constraintTop_toTopOf="@+id/textView_pubKey" />
+
+    <Button
+        android:id="@+id/btn_copyKey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@android:string/copy"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_pubKey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editTextTextMultiLine"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/textView_pubKey" />
 
-    <TextView
-        android:id="@+id/textView"
+    <EditText
+        android:id="@+id/editText_pubKey"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:ems="17"
+        android:gravity="center"
+        android:hint="Other's Public Key"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/editText_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="11"
+        android:gravity="center"
+        android:hint="Text to Encrypt/Decrypt"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        app:layout_constraintBottom_toTopOf="@+id/textView_content"
+        app:layout_constraintEnd_toStartOf="@+id/btn_decrypt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7" />
+
+
+    <Button
+        android:id="@+id/btn_encrypt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ENCRYPT"
+        app:layout_constraintBottom_toTopOf="@+id/btn_decrypt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editText_text" />
+
+    <Button
+        android:id="@+id/btn_decrypt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DECRYPT"
+        app:layout_constraintBottom_toBottomOf="@+id/editText_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_encrypt"
+        app:layout_constraintStart_toStartOf="@+id/btn_encrypt"
+        app:layout_constraintTop_toBottomOf="@+id/btn_encrypt" />
+
+    <TextView
+        android:id="@+id/textView_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="14"
+        android:text="No Content!"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_copyContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <Button
+        android:id="@+id/btn_copyContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@android:string/copy"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

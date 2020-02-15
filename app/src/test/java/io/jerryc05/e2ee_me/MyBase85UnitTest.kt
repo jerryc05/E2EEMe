@@ -77,7 +77,7 @@ class MyBase85UnitTest {
   }
 
   private fun testBase85Internal(bytes: ByteArray) {
-    val processed = decodeB85(encodeB85(bytes))
+    val processed = bytes.encodeB85().decodeB85()
 
     println(bytes.contentToString())
     println(processed.contentToString())

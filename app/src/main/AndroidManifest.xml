@@ -5,6 +5,8 @@
     android:installLocation="auto"
     tools:ignore="GoogleAppIndexingWarning">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".ui.MyApp"
         android:allowBackup="true"

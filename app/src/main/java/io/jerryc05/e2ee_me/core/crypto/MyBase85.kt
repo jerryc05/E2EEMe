@@ -17,8 +17,8 @@ private const val TAG = "MyBase85"
 
 private const val OFFSET: UByte = 40u // VALID_CHARS[0].toInt()
 
-internal fun encodeB85(src: ByteArray): CharArray {
-  val sourceSize = src.size
+internal fun ByteArray.encodeB85(): CharArray {
+  val sourceSize = this.size
   val result = CharArray(ceil(sourceSize / 4F * 5).toInt())
 
   var sourceIndex = 0
@@ -27,7 +27,7 @@ internal fun encodeB85(src: ByteArray): CharArray {
     var temp = 0u
     repeat(4) {
       temp = (temp * (UByte.MAX_VALUE + 1u)) or
-              src[sourceIndex++].mapToUByte().toUInt()
+              this[sourceIndex++].mapToUByte().toUInt()
     }
 
     var tempIndex = resultIndex + 4
@@ -42,7 +42,7 @@ internal fun encodeB85(src: ByteArray): CharArray {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
-      temp = (temp shl 8) or src[sourceIndex++].mapToUByte().toUInt()
+      temp = (temp shl 8) or this[sourceIndex++].mapToUByte().toUInt()
     }
     temp = temp shl (when (sourceSize - sourceIndex2) {
       1 -> 4
@@ -79,8 +79,8 @@ internal fun encodeB85(src: ByteArray): CharArray {
   return result
 }
 
-internal fun decodeB85(src: CharArray): ByteArray {
-  val sourceSize = src.size
+internal fun CharArray.decodeB85(): ByteArray {
+  val sourceSize = this.size
   val result = ByteArray(floor(sourceSize / 5F * 4).toInt())
 
   var sourceIndex = 0
@@ -88,7 +88,7 @@ internal fun decodeB85(src: CharArray): ByteArray {
   while (sourceIndex + 5 <= sourceSize) {
     var temp = 0u
     repeat(5) {
-      temp = temp * 85u + (src[sourceIndex++].toInt().toUInt() - OFFSET)
+      temp = temp * 85u + (this[sourceIndex++].toInt().toUInt() - OFFSET)
     }
 
     var tempIndex = resultIndex + 3
@@ -104,7 +104,7 @@ internal fun decodeB85(src: CharArray): ByteArray {
     var temp = 0u
     val sourceIndex2 = sourceIndex
     while (sourceIndex < sourceSize) {
-      temp = temp * 85u + (src[sourceIndex++].toInt().toUByte() - OFFSET)
+      temp = temp * 85u + (this[sourceIndex++].toInt().toUByte() - OFFSET)
     }
     temp = temp shr (when (sourceSize - sourceIndex2) {
       2 -> 4

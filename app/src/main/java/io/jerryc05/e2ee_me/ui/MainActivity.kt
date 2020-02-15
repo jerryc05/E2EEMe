@@ -83,7 +83,7 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
       R.id.btn_genKey -> {
         keyPair = generateEcdhKeyPair()
         textPubKey.text = "== My Public Key ==\n" +
-                String(encodeB85(keyPair!!.public.encoded).wrapB85Array())
+                String(keyPair!!.public.encoded.encodeB85().wrapB85Array())
         btnCopyKey.isEnabled = true
       }
 
@@ -93,7 +93,7 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
           textPubKey.text = "No Public Key!"
         } else {
           val clip = ClipData.newPlainText(null,
-                  String(encodeB85(keyPair!!.public.encoded).wrapB85Array()))
+                  String(keyPair!!.public.encoded.encodeB85().wrapB85Array()))
           clipboardManager.setPrimaryClip(clip)
           Toast.makeText(applicationContext, "Copied!", Toast.LENGTH_SHORT).show()
         }
@@ -104,14 +104,15 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
           val str =
                   if (v.id == R.id.btn_encrypt) {
                     val ivByte = generateIv()
-                    String(encodeB85(encryptAes(
+                    String(encryptAes(
                             editTextText.text.toString().toByteArray(),
                             exchangedKey!!,
-                            IvParameterSpec(ivByte))).wrapB85Array())
+                            IvParameterSpec(ivByte)
+                    ).encodeB85().wrapB85Array())
                   } else {
                     val temp = editTextText.text.toString()
                             .toCharArray().tryUnwrapB85Array()
-                    val data = decodeB85(temp)
+                    val data = temp.decodeB85()
                     String(decryptAes(
                             data.sliceArray(
                                     AES_KEY_SIZE / Byte.SIZE_BITS until data.size),
@@ -137,8 +138,8 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
 
   override fun afterTextChanged(s: Editable?) {
     try {
-      val chArr = s.toString().toCharArray().tryUnwrapB85Array()
-      val pubKeyBytes = decodeB85(chArr)
+      val pubKeyBytes = s.toString()
+              .toCharArray().tryUnwrapB85Array().decodeB85()
       val keyFactory = KeyFactory.getInstance(
               EC_KEYPAIR_ALGORITHM
               ,

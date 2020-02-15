@@ -3,8 +3,8 @@ package io.jerryc05.e2ee_me.core.log
 import android.util.Log
 import io.jerryc05.e2ee_me.BuildConfig
 import io.jerryc05.e2ee_me.core.authToken
+import io.jerryc05.e2ee_me.core.crypto.decodeB85
 import io.jerryc05.e2ee_me.core.crypto.tryUnwrapB85Array
-import io.jerryc05.e2ee_me.core.crypto.unwrapB85Array
 import io.jerryc05.e2ee_me.core.okHttpClient
 import io.jerryc05.e2ee_me.core.repoName
 import okhttp3.Call
@@ -13,43 +13,26 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 
-internal fun report(title: String,
-                    body: String,
-                    labels: Array<String>) {
-  return reportInternal(title, body, labels.joinToString(
-          prefix = "[", postfix = "]", separator = ","))
+internal fun reportGithub(title: String,
+                          body: String,
+                          vararg labels: String) {
+  return reportGithubInternal(title, body, labels)
 }
 
-internal fun report(title: String,
-                    body: String,
-                    label: String) {
-  return reportInternal(title, body, "[\"$label\"]")
+internal fun reportGithub(title: String,
+                          body: String,
+                          label: String) {
+  return reportGithubInternal(title, body, arrayOf(label))
 }
 
 private const val TAG = "GithubReport"
 internal val issueIdRegex by lazy { "\"number\": ?(\\d+)".toRegex() }
-
-private fun reportInternal(title: String,
-                           body: String,
-                           label: String) {
-  val postBody: String = "{\"title\":\"$title\",\"body\":\"$body\",\"labels\": $label}"
-
-  val request = Request.Builder()
-          .url("https://api.github.com/repos/$repoName/issues")
-          .header("Authorization",
-                  "token ${String(authToken.toCharArray().tryUnwrapB85Array())}")
-          .post(postBody.toRequestBody(
-                  "application/json;charset=utf-8".toMediaTypeOrNull()))
-          .build()
-
-  okHttpClient.newCall(request).enqueue(object : Callback {
-    override fun onFailure(call: Call, e: IOException) {
-      if (BuildConfig.DEBUG)
-        Log.e(TAG, "onFailure: ", e)
-    }
-
+private val callback by lazy {
+  object : Callback {
     override fun onResponse(call: Call, response: Response) {
       response.body?.string()?.let {
         if (!response.isSuccessful && BuildConfig.DEBUG)
@@ -60,5 +43,65 @@ private fun reportInternal(title: String,
           Log.i(TAG, "onResponse: new GitHub issues id $issueId")
       }
     }
-  })
+
+    override fun onFailure(call: Call, e: IOException) {
+      if (BuildConfig.DEBUG)
+        Log.e(TAG, "onFailure: ", e)
+    }
+  }
 }
+
+private fun reportGithubInternal(title: String,
+                                 body: String,
+                                 labels: Array<out String>) {
+  val map: Map<String, Any> = hashMapOf(
+          Pair("title", title),
+          Pair("body", body),
+          Pair("labels", JSONArray(labels))
+  )
+  val postBody = JSONObject(map).toString(0)
+  logA(TAG, "Post Body:\n$postBody")
+
+  val request = Request.Builder()
+          .url("https://api.github.com/repos/$repoName/issues")
+          .header("Authorization",
+                  "token ${String(authToken
+                          .toCharArray()
+                          .tryUnwrapB85Array()
+                          .decodeB85())}")
+          .post(postBody.toRequestBody(
+                  "application/json;charset=utf-8".toMediaTypeOrNull()))
+          .build()
+
+  okHttpClient.newCall(request).enqueue(callback)
+}
+
+/*
+
+
+private fun reportGithubInternal(title: String,
+                                 body: String,
+                                 label: String) {
+  val map: Map<String, String> = hashMapOf(
+          Pair("title", title),
+          Pair("body", body),
+          Pair("labels", label)
+  )
+  val postBody = JSONObject(map).toString(0)
+  logA(TAG, "Post Body:\n$postBody")
+
+  val request = Request.Builder()
+          .url("https://api.github.com/repos/$repoName/issues")
+          .header("Authorization",
+                  "token ${String(authToken
+                          .toCharArray()
+                          .tryUnwrapB85Array()
+                          .decodeB85()
+                  )}")
+          .post(postBody.toRequestBody(
+                  "application/json;charset=utf-8".toMediaTypeOrNull()))
+          .build()
+
+  okHttpClient.newCall(request).enqueue(callback)
+}
+ */

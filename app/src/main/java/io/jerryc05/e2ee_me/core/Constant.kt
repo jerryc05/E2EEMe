@@ -1,8 +1,12 @@
 package io.jerryc05.e2ee_me.core
 
+import android.app.Activity
 import android.security.keystore.KeyProperties
 import io.jerryc05.e2ee_me.BuildConfig
 import okhttp3.OkHttpClient
+import java.lang.ref.WeakReference
+
+internal lateinit var weakActivity: WeakReference<Activity>
 
 internal const val ANDROID_KEYSTORE_PROVIDER = "AndroidKeyStore"
 internal const val RSA_CIPHER_ALGORITHM = KeyProperties.KEY_ALGORITHM_RSA

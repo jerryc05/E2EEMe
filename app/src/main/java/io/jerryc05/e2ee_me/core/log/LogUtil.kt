@@ -8,33 +8,28 @@ import android.util.Log
 import io.jerryc05.e2ee_me.BuildConfig
 import io.jerryc05.e2ee_me.core.weakActivity
 
-internal fun logA(tag: String, msg: String?) {
+
+internal fun logA(tag: String, msg: String?, tr: Throwable? = null) {
   if (BuildConfig.DEBUG)
-    Log.println(Log.ASSERT, tag, msg)
+    Log.println(Log.ASSERT, tag, msg +
+            if (tr == null) ""
+            else "\n```\n${Log.getStackTraceString(tr)}\n```")
 }
 
-internal fun logE(tag: String, msg: String?) {
-  logEInternal(tag, msg, null)
-}
-
-internal fun logE(tag: String, msg: String?, tr: Throwable) {
-  logEInternal(tag, msg, tr)
-}
-
-private fun logEInternal(tag: String, msg0: String?, tr: Throwable?) {
-  val msg = msg0 ?: ""
+internal fun logE(tag: String, msg: String?, tr: Throwable? = null) {
+  val msg0 = msg ?: ""
 
   if (BuildConfig.DEBUG)
-    Log.e(tag, msg, tr)
+    Log.e(tag, msg0, tr)
 
-  val errMsg = "$tag: $msg\n```\n${Log.getStackTraceString(tr)}\n```"
+  val errMsg = "$tag: $msg0\n```\n${Log.getStackTraceString(tr)}\n```"
 
   val callback by lazy {
     DialogInterface.OnClickListener { dialogInterface: DialogInterface, i: Int ->
       when (i) {
         DialogInterface.BUTTON_POSITIVE -> {
           reportGithub(
-                  "$tag:${if (msg.isBlank()) "" else "$msg |"} $tr",
+                  "$tag:${if (msg0.isBlank()) "" else "$msg0 |"} $tr",
                   errMsg,
                   "bug"
           )

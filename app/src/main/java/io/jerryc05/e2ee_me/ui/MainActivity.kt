@@ -155,7 +155,7 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
       btnEncrypt.isEnabled = true
       btnDecrypt.isEnabled = true
     } catch (e: Exception) {
-      logE("MainActivity", null, e)
+      logE("MainActivity", "afterTextChanged: ", e)
       exchangedKey = null
       btnEncrypt.isEnabled = false
       btnDecrypt.isEnabled = false

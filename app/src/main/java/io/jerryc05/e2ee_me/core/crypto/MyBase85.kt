@@ -156,7 +156,6 @@ internal fun CharArray.wrapB85Array(): CharArray {
 }
 
 internal fun CharArray.unwrapB85Array(): CharArray {
-  logA(TAG, "unwrapB85Array: ${String(this)}")
   val start = this.lastIndexOf(startMark2) + 1
   if (start < 0 || this[start - 2] != startMark1 || this[start - 1] != startMark2)
     throw Exception("Invalid start mark!")
@@ -172,7 +171,8 @@ internal fun CharArray.tryUnwrapB85Array(): CharArray {
   return try {
     this.unwrapB85Array()
   } catch (e: Exception) {
-    Log.e(TAG, "tryUnwrapB85Array: ", e)
+    // Ignore this exception
+    logA(TAG,"tryUnwrapB85Array: ", e)
     this
   }
 }

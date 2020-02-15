@@ -38,6 +38,7 @@ internal fun generateRsaKeyPair(): KeyPair {
     keyPairGen.initialize(kgParamSpec.build())
     keyPairGen.genKeyPair()
   } catch (e: Exception) {
+    // Ignore this exception
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(false)
 

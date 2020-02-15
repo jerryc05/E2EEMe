@@ -37,6 +37,7 @@ internal fun generateAesKey(): SecretKey {
     kg.init(kgParamSpec.build())
     kg.generateKey()
   } catch (e: Exception) {
+    // Ignore this exception
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
       kgParamSpec.setIsStrongBoxBacked(false)
 

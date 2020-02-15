@@ -7,8 +7,8 @@ android {
         applicationId "io.jerryc05.e2ee_me"
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 2
-        versionName "0.1.1"
+        versionCode 3
+        versionName "0.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "xxhdpi", "en", "zh-rCN"
     }
@@ -41,7 +41,6 @@ dependencies {
 //    implementation fileTree(dir: "libs", include: ["*.jar"])
 //    implementation "androidx.appcompat:appcompat:1.1.0"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
-    implementation "com.squareup.okhttp3:okhttp:4.3.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.2"

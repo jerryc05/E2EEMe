@@ -22,7 +22,8 @@ internal fun logE(tag: String, msg: String?, tr: Throwable? = null) {
   if (BuildConfig.DEBUG)
     Log.e(tag, msg0, tr)
 
-  val errMsg = "$tag: $msg0\n```\n${Log.getStackTraceString(tr)}\n```"
+  val trace = if (tr == null) "" else Log.getStackTraceString(tr)
+  val errMsg = "$tag: $msg0\n```\n$trace\n```"
 
   val callback by lazy {
     DialogInterface.OnClickListener { dialogInterface: DialogInterface, i: Int ->

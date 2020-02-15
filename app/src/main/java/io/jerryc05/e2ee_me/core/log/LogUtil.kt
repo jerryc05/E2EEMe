@@ -27,13 +27,17 @@ private fun logEInternal(tag: String, msg0: String?, tr: Throwable?) {
   if (BuildConfig.DEBUG)
     Log.e(tag, msg, tr)
 
-  val errMsg = "$tag: $msg\n${Log.getStackTraceString(tr)}"
+  val errMsg = "$tag: $msg\n```\n${Log.getStackTraceString(tr)}\n```"
 
   val callback by lazy {
     DialogInterface.OnClickListener { dialogInterface: DialogInterface, i: Int ->
       when (i) {
         DialogInterface.BUTTON_POSITIVE -> {
-          reportGithub("$tag: $msg | $tr", errMsg, "bug")
+          reportGithub(
+                  "$tag:${if (msg.isBlank()) "" else "$msg |"} $tr",
+                  errMsg,
+                  "bug"
+          )
         }
         DialogInterface.BUTTON_NEGATIVE -> {
         }

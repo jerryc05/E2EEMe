@@ -2,28 +2,28 @@
 
 package io.jerryc05.e2ee_me.core.crypto
 
-import android.os.Build
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import io.jerryc05.e2ee_me.core.*
+import io.jerryc05.e2ee_me.core.AES_CIPHER_ALGORITHM
+import io.jerryc05.e2ee_me.core.ECDH_KEY_EXCHANGE_ALGORITHM
+import io.jerryc05.e2ee_me.core.EC_CURVE_STD
+import io.jerryc05.e2ee_me.core.EC_KEYPAIR_ALGORITHM
+import io.jerryc05.e2ee_me.core.log.logE
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.PrivateKey
 import java.security.PublicKey
+import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
 import javax.crypto.SecretKey
 
 private const val TAG = "ECDH"
 
 private val keyPairGen by lazy {
-  KeyPairGenerator.getInstance(EC_KEYPAIR_ALGORITHM, ANDROID_KEYSTORE_PROVIDER)
+  // WARNING! Cannot use Android KeyStore!
+  KeyPairGenerator.getInstance(EC_KEYPAIR_ALGORITHM)
 }
 
 private val kgParamSpec by lazy {
-  KeyGenParameterSpec.Builder(
-          KEYSTORE_ALIAS,
-          KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-  )
+  ECGenParameterSpec(EC_CURVE_STD)
 }
 
 internal val keyAgreement by lazy {
@@ -31,22 +31,13 @@ internal val keyAgreement by lazy {
   KeyAgreement.getInstance(ECDH_KEY_EXCHANGE_ALGORITHM)
 }
 
-internal fun generateEcdhKeyPair(): KeyPair {
-  kgParamSpec.setKeySize(EC_KEY_SIZE)
-
+internal fun generateEcdhKeyPair(): KeyPair? {
   return try {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-      kgParamSpec.setIsStrongBoxBacked(true)
-
-    keyPairGen.initialize(kgParamSpec.build())
+    keyPairGen.initialize(kgParamSpec)
     keyPairGen.genKeyPair()
   } catch (e: Exception) {
-    // Ignore this exception
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-      kgParamSpec.setIsStrongBoxBacked(false)
-
-    keyPairGen.initialize(kgParamSpec.build())
-    keyPairGen.genKeyPair()
+    logE(TAG, "generateEcdhKeyPair: ", e)
+    null
   }
 }
 

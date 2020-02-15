@@ -22,6 +22,7 @@ internal const val AES_CIPHER_TRANSMISSION = "" +
         AES_CIPHER_ALGORITHM + '/' +
         KeyProperties.BLOCK_MODE_CTR + '/' +
         KeyProperties.ENCRYPTION_PADDING_NONE
+internal const val EC_CURVE_STD = "secp256r1"
 
 internal const val RSA_KEY_SIZE = 2048
 internal const val EC_KEY_SIZE = 256

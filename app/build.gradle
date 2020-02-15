@@ -7,8 +7,8 @@ android {
         applicationId "io.jerryc05.e2ee_me"
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.1.2"
+        versionCode 4
+        versionName "0.1.2-h1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "xxhdpi", "en", "zh-rCN"
     }

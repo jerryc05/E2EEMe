@@ -28,11 +28,8 @@ internal fun logE(tag: String, msg: String?, tr: Throwable? = null) {
     DialogInterface.OnClickListener { dialogInterface: DialogInterface, i: Int ->
       when (i) {
         DialogInterface.BUTTON_POSITIVE -> {
-          reportGithub(
-                  "$tag:${if (msg0.isBlank()) "" else "$msg0 |"} $tr",
-                  errMsg,
-                  "bug"
-          )
+          val title = "$tag:${if (msg0.isBlank()) "" else "$msg0 |"} $tr"
+          reportGithub(title, errMsg)
         }
         DialogInterface.BUTTON_NEGATIVE -> {
         }

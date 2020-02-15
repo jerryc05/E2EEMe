@@ -13,21 +13,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
-internal fun reportGithub(title: String,
-                          body: String,
-                          vararg labels: String) {
-  return reportGithubInternal(title, body, labels)
-}
-
-internal fun reportGithub(title: String,
-                          body: String,
-                          label: String) {
-  return reportGithubInternal(title, body, arrayOf(label))
-}
 
 private const val TAG = "GithubReport"
 internal val issueIdRegex by lazy { "\"number\": ?(\\d+)".toRegex() }
@@ -51,14 +39,9 @@ private val callback by lazy {
   }
 }
 
-private fun reportGithubInternal(title: String,
-                                 body: String,
-                                 labels: Array<out String>) {
+internal fun reportGithub(title: String, body: String) {
   val map: Map<String, Any> = hashMapOf(
-          Pair("title", title),
-          Pair("body", body),
-          Pair("labels", JSONArray(labels))
-  )
+          Pair("title", title), Pair("body", body))
   val postBody = JSONObject(map).toString(0)
   logA(TAG, "Post Body:\n$postBody")
 

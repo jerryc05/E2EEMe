@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.jerryc05.e2ee_me.ui
 
 import android.app.Activity

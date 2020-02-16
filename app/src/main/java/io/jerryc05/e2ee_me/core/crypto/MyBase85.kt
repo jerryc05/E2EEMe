@@ -3,7 +3,6 @@
 
 package io.jerryc05.e2ee_me.core.crypto
 
-import android.util.Log
 import io.jerryc05.e2ee_me.core.log.logA
 import kotlin.math.ceil
 import kotlin.math.floor

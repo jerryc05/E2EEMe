@@ -21,7 +21,7 @@ internal const val RSA_CIPHER_TRANSMISSION = "" +
         KeyProperties.ENCRYPTION_PADDING_NONE
 internal const val AES_CIPHER_TRANSMISSION = "" +
         AES_CIPHER_ALGORITHM + '/' +
-        KeyProperties.BLOCK_MODE_CTR + '/' +
+        KeyProperties.BLOCK_MODE_GCM + '/' +
         KeyProperties.ENCRYPTION_PADDING_NONE
 internal const val EC_CURVE_STD = "secp256r1"
 

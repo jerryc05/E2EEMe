@@ -25,6 +25,7 @@ android {
             versionNameSuffix ".dbg"
         }
     }
+    buildFeatures.viewBinding = true
     splits.abi {
         enable true
         reset()

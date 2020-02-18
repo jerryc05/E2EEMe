@@ -19,6 +19,7 @@ import io.jerryc05.e2ee_me.core.AES_VI_SIZE
 import io.jerryc05.e2ee_me.core.EC_KEYPAIR_ALGORITHM
 import io.jerryc05.e2ee_me.core.crypto.*
 import io.jerryc05.e2ee_me.core.log.logE
+import io.jerryc05.e2ee_me.databinding.ActivityMainBinding
 import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.spec.X509EncodedKeySpec
@@ -29,16 +30,18 @@ import javax.crypto.spec.IvParameterSpec
 //class MainActivity : AppCompatActivity() {
 class MainActivity : Activity(), View.OnClickListener, TextWatcher {
 
-  private lateinit var textPubKey: TextView
-  private lateinit var btnCopyKey: Button
+  private lateinit var binding:ActivityMainBinding
 
-  private lateinit var editTextPubKey: EditText
-  private lateinit var editTextText: EditText
-  private lateinit var textContent: TextView
-
-  private lateinit var btnEncrypt: Button
-  private lateinit var btnDecrypt: Button
-  private lateinit var btnCopyContent: Button
+//  private lateinit var textPubKey: TextView
+//  private lateinit var btnCopyKey: Button
+//
+//  private lateinit var editTextPubKey: EditText
+//  private lateinit var editTextText: EditText
+//  private lateinit var textContent: TextView
+//
+//  private lateinit var btnEncrypt: Button
+//  private lateinit var btnDecrypt: Button
+//  private lateinit var btnCopyContent: Button
 
   private var keyPair: KeyPair? = null
   private var exchangedKey: SecretKey? = null
@@ -50,29 +53,30 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
   @ExperimentalUnsignedTypes
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-    textPubKey = findViewById(R.id.textView_pubKey)
-    val btnGenKey = findViewById<Button>(R.id.btn_genKey)
-    btnGenKey.setOnClickListener(this)
-    btnCopyKey = findViewById(R.id.btn_copyKey)
-    btnCopyKey.setOnClickListener(this)
-    btnCopyKey.isEnabled = false
+//    textPubKey = findViewById(R.id.textView_pubKey)
+//    val btnGenKey = findViewById<Button>(R.id.btn_genKey)
+    binding.btnGenKey.setOnClickListener(this)
+//    btnCopyKey = findViewById(R.id.btn_copyKey)
+    binding. btnCopyKey.setOnClickListener(this)
+    binding.btnCopyKey.isEnabled = false
 
-    editTextPubKey = findViewById(R.id.editText_pubKey)
-    editTextPubKey.addTextChangedListener(this)
-    editTextText = findViewById(R.id.editText_text)
+//    editTextPubKey = findViewById(R.id.editText_pubKey)
+    binding.editTextPubKey.addTextChangedListener(this)
+//    editTextText = findViewById(R.id.editText_text)
 
-    btnEncrypt = findViewById(R.id.btn_encrypt)
-    btnEncrypt.setOnClickListener(this)
-    btnEncrypt.isEnabled = false
-    btnDecrypt = findViewById(R.id.btn_decrypt)
-    btnDecrypt.setOnClickListener(this)
-    btnDecrypt.isEnabled = false
+//    btnEncrypt = findViewById(R.id.btn_encrypt)
+    binding.btnEncrypt.setOnClickListener(this)
+    binding.btnEncrypt.isEnabled = false
+//    btnDecrypt = findViewById(R.id.btn_decrypt)
+    binding.btnDecrypt.setOnClickListener(this)
+    binding.btnDecrypt.isEnabled = false
 
-    textContent = findViewById(R.id.textView_content)
-    btnCopyContent = findViewById(R.id.btn_copyContent)
-    btnCopyContent.setOnClickListener(this)
+//    textContent = findViewById(R.id.textView_content)
+//    btnCopyContent = findViewById(R.id.btn_copyContent)
+    binding.btnCopyContent.setOnClickListener(this)
   }
 
   @SuppressLint("SetTextI18n")
@@ -81,16 +85,16 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
       R.id.btn_genKey -> {
         generateEcdhKeyPair()?.let {
           keyPair = it
-          textPubKey.text = "== My Public Key ==\n" +
+          binding.textViewPubKey.text = "== My Public Key ==\n" +
                   String(it.public.encoded.encodeB85().wrapB85Array())
-          btnCopyKey.isEnabled = true
+          binding.btnCopyKey.isEnabled = true
         }
       }
 
       R.id.btn_copyKey -> {
         if (keyPair == null) {
-          btnCopyKey.isEnabled = false
-          textPubKey.text = "No Public Key!"
+          binding.btnCopyKey.isEnabled = false
+          binding.textViewPubKey.text = "No Public Key!"
         } else {
           val clip = ClipData.newPlainText(null,
                   String(keyPair!!.public.encoded.encodeB85().wrapB85Array()))
@@ -106,12 +110,12 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
                     val ivByte = generateIv()
                     String((ivByte +
                             encryptAes(
-                                    editTextText.text.toString().toByteArray(),
+                                    binding.editTextText.text.toString().toByteArray(),
                                     exchangedKey!!,
                                     IvParameterSpec(ivByte)
                             )).encodeB85().wrapB85Array())
                   } else {
-                    val temp = editTextText.text.toString()
+                    val temp = binding.editTextText.text.toString()
                             .toCharArray().tryUnwrapB85Array()
                     val data = temp.decodeB85()
                     String(decryptAes(
@@ -121,16 +125,16 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
                                     data.sliceArray(0 until AES_VI_SIZE)
                             )))
                   }
-          textContent.text = str
+          binding.textViewContent.text = str
         } else {
-          btnEncrypt.isEnabled = false
-          btnDecrypt.isEnabled = false
+          binding.btnEncrypt.isEnabled = false
+          binding.btnDecrypt.isEnabled = false
         }
       }
 
       R.id.btn_copyContent -> {
         val clip = ClipData.newPlainText(
-                null, textContent.text.toString())
+                null, binding.textViewContent.text.toString())
         clipboardManager.setPrimaryClip(clip)
         Toast.makeText(applicationContext, "Copied!", Toast.LENGTH_SHORT).show()
       }
@@ -153,13 +157,13 @@ class MainActivity : Activity(), View.OnClickListener, TextWatcher {
 //        keyAgreement.doPhase(pubKey, true)
 //        exchangedKey = keyAgreement.generateSecret(AES_CIPHER_ALGORITHM)
         exchangedKey = exchangeEcdhAes(it, pubKey)
-        btnEncrypt.isEnabled = true
-        btnDecrypt.isEnabled = true
+        binding.btnEncrypt.isEnabled = true
+        binding.btnDecrypt.isEnabled = true
       } catch (e: Exception) {
         logE("MainActivity", "afterTextChanged: ", e)
         exchangedKey = null
-        btnEncrypt.isEnabled = false
-        btnDecrypt.isEnabled = false
+        binding.btnEncrypt.isEnabled = false
+        binding.btnDecrypt.isEnabled = false
       }
     }
   }
